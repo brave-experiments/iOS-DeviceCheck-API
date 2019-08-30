@@ -10,13 +10,21 @@ import UIKit
 import DeviceCheck
 
 class ViewController: UIViewController {
-    @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var output: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         generateToken()
     }
-
+    
+    @IBAction func copyText(_ sender: Any) {
+        UIPasteboard.general.string = self.output.text
+    }
+    
+    @IBAction func refreshToken(_ sender: Any) {
+        generateToken()
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -28,14 +36,14 @@ class ViewController: UIViewController {
             currentDevice.generateToken(completionHandler: { (data, error) in
                 DispatchQueue.main.async {
                     if let tokenData = data {
-                        self.statusLabel.text = tokenData.base64EncodedString()
+                        self.output.text = tokenData.base64EncodedString()
                     } else {
-                        self.statusLabel.text = error?.localizedDescription ?? "Something Wrong!!!"
+                        self.output.text = error?.localizedDescription ?? "Something Wrong!!!"
                     }
                 }
             })
         } else {
-            self.statusLabel.text = "Device not supported."
+            self.output.text = "Device not supported."
         }
     }
 
